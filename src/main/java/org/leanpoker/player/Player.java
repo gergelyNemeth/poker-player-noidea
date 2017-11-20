@@ -10,38 +10,72 @@ import java.util.List;
 
 public class Player {
 
-    static final String VERSION = "0.1 strategy";
+    static final String VERSION = "0.2 strategy";
 
     public static int betRequest(JsonElement request) {
         JsonObject jobj = request.getAsJsonObject();
         int currentBuyIn = jobj.get("current_buy_in").getAsInt();
+
         int minRaise = jobj.get("minimum_raise").getAsInt();
         int bet = 0;
-        List<String> cardList = new ArrayList<>(Arrays.asList("J", "Q", "K", "A"));
+        List<String> highCards = new ArrayList<>(Arrays.asList("J", "Q", "K", "A"));
+        List<String> allCards = new ArrayList<>(Arrays.asList("", "", "2", "3", "4", "5", "6",
+                "7", "8", "9", "10", "J", "Q", "K", "A"));
+//        List<String> commCards = new ArrayList<>();
 
         JsonArray players = jobj.getAsJsonArray("players");
+//        JsonArray comm_cards = jobj.getAsJsonArray("community_card");
+//        for (JsonElement comm_card : comm_cards) {
+//            JsonObject comm_cardObj = comm_card.getAsJsonObject();
+//            String comm_rank = comm_cardObj.get("rank").getAsString();
+//            commCards.add(comm_rank);
+//        }
+
         for (JsonElement player : players) {
             JsonObject playerObj = player.getAsJsonObject();
             String playerName = playerObj.get("name").getAsString();
             if (playerName.equals("noIDEa")) {
                 JsonArray cards = playerObj.getAsJsonArray("hole_cards");
+                int ourBet = playerObj.get("bet").getAsInt();
+//                System.out.println(ourBet + " " + allCards.toString() + commCards );
                 int highCardCounter = 0;
                 String previousCard = null;
                 for (JsonElement card : cards) {
+
                     JsonObject cardObj = card.getAsJsonObject();
                     String rank = cardObj.get("rank").getAsString();
-                    if (cardList.contains(rank)) {
+                    if (highCards.contains(rank)) {
                         highCardCounter++;
                     }
                     if (previousCard != null) {
                         if (previousCard.equals(rank)) {
-                           bet = currentBuyIn + minRaise;
+                            int rankValue = allCards.indexOf(rank);
+                            if (rankValue > 7) {
+                                bet = currentBuyIn - ourBet + minRaise;
+                            } else {
+                                bet = currentBuyIn - ourBet;
+                            }
+//                            if (commCards.size() > 0 && rankValue < 8) {
+//                                if (commCards.contains(rank)) {
+//                                    bet = currentBuyIn + minRaise;
+//                                } else {
+//                                    bet = 0;
+//                                }
+//                            }
                         }
                     }
+//                    if (commCards.contains(rank)) {
+//                        if (highCards.contains(rank)) {
+//                            bet = currentBuyIn + minRaise;
+//                        } else {
+//                            bet = 0;
+//                        }
+//
+//                    }
                     previousCard = rank;
                 }
                 if (highCardCounter == 2) {
-                    bet = currentBuyIn + minRaise;
+                    bet = currentBuyIn - ourBet + minRaise;
                 }
             }
         }
@@ -51,4 +85,5 @@ public class Player {
 
     public static void showdown(JsonElement game) {
     }
+
 }
