@@ -18,7 +18,7 @@ public class Player {
 
         int minRaise = jobj.get("minimum_raise").getAsInt();
         int bet = 0;
-        List<String> highCards = new ArrayList<>(Arrays.asList("J", "Q", "K", "A"));
+        List<String> highCards = new ArrayList<>(Arrays.asList("10", "J", "Q", "K", "A"));
         List<String> allCards = new ArrayList<>(Arrays.asList("", "", "2", "3", "4", "5", "6",
                 "7", "8", "9", "10", "J", "Q", "K", "A"));
 //        List<String> commCards = new ArrayList<>();
