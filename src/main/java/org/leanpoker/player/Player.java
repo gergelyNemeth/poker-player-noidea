@@ -4,14 +4,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Player {
 
-    static final String VERSION = "Default Java folding player";
+    static final String VERSION = "0.1 strategy";
 
     public static int betRequest(JsonElement request) {
         JsonObject jobj = request.getAsJsonObject();
         int pot = jobj.get("pot").getAsInt();
         int bet = 0;
+        List<String> cardList = new ArrayList<>(Arrays.asList("J", "Q", "K", "A"));
 
         JsonArray players = jobj.getAsJsonArray("players");
         for (JsonElement player : players) {
@@ -22,8 +27,8 @@ public class Player {
                 int counter = 0;
                 for (JsonElement card : cards) {
                     JsonObject cardObj = card.getAsJsonObject();
-                    int rank = cardObj.get("rank").getAsInt();
-                    if (rank > 10) {
+                    String rank = cardObj.get("rank").getAsString();
+                    if (cardList.contains(rank)) {
                         counter++;
                     }
                 }
