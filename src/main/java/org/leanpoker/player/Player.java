@@ -21,23 +21,23 @@ public class Player {
         List<String> highCards = new ArrayList<>(Arrays.asList("10", "J", "Q", "K", "A"));
         List<String> allCards = new ArrayList<>(Arrays.asList("", "", "2", "3", "4", "5", "6",
                 "7", "8", "9", "10", "J", "Q", "K", "A"));
-//        List<String> commCards = new ArrayList<>();
+        List<String> commCards = new ArrayList<>();
+
+
+        JsonArray comm_cards = jobj.getAsJsonArray("community_cards");
+        for (JsonElement comm_card : comm_cards) {
+            JsonObject comm_cardObj = comm_card.getAsJsonObject();
+            String comm_rank = comm_cardObj.get("rank").getAsString();
+            commCards.add(comm_rank);
+        }
 
         JsonArray players = jobj.getAsJsonArray("players");
-//        JsonArray comm_cards = jobj.getAsJsonArray("community_card");
-//        for (JsonElement comm_card : comm_cards) {
-//            JsonObject comm_cardObj = comm_card.getAsJsonObject();
-//            String comm_rank = comm_cardObj.get("rank").getAsString();
-//            commCards.add(comm_rank);
-//        }
-
         for (JsonElement player : players) {
             JsonObject playerObj = player.getAsJsonObject();
             String playerName = playerObj.get("name").getAsString();
             if (playerName.equals("noIDEa")) {
                 JsonArray cards = playerObj.getAsJsonArray("hole_cards");
                 int ourBet = playerObj.get("bet").getAsInt();
-//                System.out.println(ourBet + " " + allCards.toString() + commCards );
                 int highCardCounter = 0;
                 String previousCard = null;
                 for (JsonElement card : cards) {
@@ -55,23 +55,23 @@ public class Player {
                             } else {
                                 bet = currentBuyIn - ourBet;
                             }
-//                            if (commCards.size() > 0 && rankValue < 8) {
-//                                if (commCards.contains(rank)) {
-//                                    bet = currentBuyIn + minRaise;
-//                                } else {
-//                                    bet = 0;
-//                                }
-//                            }
+                            if (commCards.size() > 0 && rankValue < 8) {
+                                if (commCards.contains(rank)) {
+                                    bet = currentBuyIn + minRaise;
+                                } else {
+                                    bet = 0;
+                                }
+                            }
                         }
                     }
-//                    if (commCards.contains(rank)) {
-//                        if (highCards.contains(rank)) {
-//                            bet = currentBuyIn + minRaise;
-//                        } else {
-//                            bet = 0;
-//                        }
-//
-//                    }
+                    if (commCards.contains(rank)) {
+                        if (highCards.contains(rank)) {
+                            bet = currentBuyIn + minRaise;
+                        } else {
+                            bet = 0;
+                        }
+
+                    }
                     previousCard = rank;
                 }
                 if (highCardCounter == 2) {
