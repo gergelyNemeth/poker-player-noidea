@@ -63,14 +63,12 @@ public class Player {
                                 }
                             }
                         }
-                    }
-                    if (commCards.contains(rank)) {
+                    } else if (commCards.contains(rank)) {
                         if (highCards.contains(rank)) {
                             bet = currentBuyIn + minRaise;
                         } else {
                             bet = 0;
                         }
-
                     }
                     previousCard = rank;
                 }
