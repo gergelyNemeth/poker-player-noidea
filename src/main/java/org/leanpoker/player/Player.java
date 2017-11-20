@@ -14,7 +14,8 @@ public class Player {
 
     public static int betRequest(JsonElement request) {
         JsonObject jobj = request.getAsJsonObject();
-        int pot = jobj.get("pot").getAsInt();
+        int currentBuyIn = jobj.get("current_buy_in").getAsInt();
+        int minRaise = jobj.get("minimum_raise").getAsInt();
         int bet = 0;
         List<String> cardList = new ArrayList<>(Arrays.asList("J", "Q", "K", "A"));
 
@@ -34,13 +35,13 @@ public class Player {
                     }
                     if (previousCard != null) {
                         if (previousCard.equals(rank)) {
-                           bet = (int) Math.ceil(pot * 0.8);
+                           bet = currentBuyIn + minRaise;
                         }
                     }
                     previousCard = rank;
                 }
                 if (highCardCounter == 2) {
-                    bet = (int) Math.ceil(pot * 0.5);
+                    bet = currentBuyIn + minRaise;
                 }
             }
         }
