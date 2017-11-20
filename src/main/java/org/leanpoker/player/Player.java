@@ -24,16 +24,24 @@ public class Player {
             String playerName = playerObj.get("name").getAsString();
             if (playerName.equals("noIDEa")) {
                 JsonArray cards = playerObj.getAsJsonArray("hole_cards");
-                int counter = 0;
+                int highCardCounter = 0;
+                String previousCard = null;
                 for (JsonElement card : cards) {
                     JsonObject cardObj = card.getAsJsonObject();
                     String rank = cardObj.get("rank").getAsString();
                     if (cardList.contains(rank)) {
-                        counter++;
+                        highCardCounter++;
                     }
+                    if (previousCard != null) {
+                        if (previousCard.equals(rank)) {
+                           bet = (int) Math.ceil(pot * 0.8);
+                        }
+                    }
+                    previousCard = rank;
                 }
-                if (counter == 2) {
-                    bet = (int) Math.ceil(pot * 0.5);                }
+                if (highCardCounter == 2) {
+                    bet = (int) Math.ceil(pot * 0.5);
+                }
             }
         }
 
